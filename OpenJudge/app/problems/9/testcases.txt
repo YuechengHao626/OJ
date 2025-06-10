@@ -1,0 +1,20 @@
+a1B2C3d
+4
+Hello123
+5
+Python3.9
+6
+123456
+0
+ABCDEF
+6
+abcdef
+6
+a b c d
+4
+!@#$%^
+0
+A1b2C3d4
+4
+ZzZzZz
+6 

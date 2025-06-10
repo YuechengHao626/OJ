@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Submissions - OpenJudge{% endblock %}
+
+{% block content %}
+<section class="full-width">
+    <div class="box">
+        <h3 class="center">Your Submissions</h3>
+        <hr>
+        {% if submissions %}
+            {% for submission in submissions %}
+            <details id="submission-{{ submission.submission_id }}" data-loaded="false">
+                <summary>
+                    Submission {{ total_submissions - loop.index0 }} - 
+                    {{ submission.created_at.strftime('%Y-%m-%d %H:%M') if submission.created_at else 'Unknown' }}
+                    {% if submission.result == 'ok' %}
+                        <span style="color: green;">[PASS]</span>
+                    {% elif submission.result == 'fail' %}
+                        <span style="color: red;">[FAIL]</span>
+                    {% elif submission.result == 'error' %}
+                        <span style="color: orange;">[ERROR]</span>
+                    {% else %}
+                        <span style="color: blue;" class="pending-status" data-submission-id="{{ submission.submission_id }}">[JUDGING...]</span>
+                    {% endif %}
+                </summary>
+                <div class="submission-details" id="details-{{ submission.submission_id }}">
+                    <div class="loading">Loading details...</div>
+                </div>
+            </details>
+            {% endfor %}
+        {% else %}
+            <p class="center">No submissions yet. <a href="{{ url_for('web.problems_list') }}">Start solving problems!</a></p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Debug function
+function debugLog(message, data) {
+    console.log(`[Debug] ${message}:`, data);
+}
+
+// Wait for DOM to load
+document.addEventListener('DOMContentLoaded', function() {
+    debugLog('DOM loaded', 'Initializing submission details handlers');
+    
+    // Handle details toggle events
+    document.querySelectorAll('details').forEach(details => {
+        details.addEventListener('toggle', function(event) {
+            debugLog('Details toggled', {
+                id: this.id,
+                open: this.open,
+                loaded: this.getAttribute('data-loaded')
+            });
+            
+            if (this.open && this.getAttribute('data-loaded') === 'false') {
+                const submissionId = this.id.replace('submission-', '');
+                loadSubmissionDetails(submissionId);
+            }
+        });
+    });
+});
+
+// Load submission details
+function loadSubmissionDetails(submissionId) {
+    debugLog('Loading submission details', { submissionId });
+    const detailsDiv = document.getElementById(`details-${submissionId}`);
+    
+    fetch(`/api/submission/${submissionId}`)
+        .then(response => {
+            debugLog('API response received', { status: response.status });
+            return response.json();
+        })
+        .then(data => {
+            debugLog('API data', data);
+            
+            // Update status display
+            const statusSpan = document.querySelector(`#submission-${submissionId} .pending-status`);
+            if (statusSpan && data.result !== 'pending') {
+                const statusMap = {
+                    'ok': { text: 'PASS', color: 'green' },
+                    'fail': { text: 'FAIL', color: 'red' },
+                    'error': { text: 'ERROR', color: 'orange' }
+                };
+                const status = statusMap[data.result] || { text: data.result.toUpperCase(), color: 'blue' };
+                statusSpan.style.color = status.color;
+                statusSpan.textContent = `[${status.text}]`;
+                statusSpan.classList.remove('pending-status');
+            }
+            
+            const html = `
+                <hr>
+                <p><b>Problem</b></p>
+                <p>${data.problem.description}</p>
+                
+                <p><b>Code Snapshot</b></p>
+                <div class="code-wrapper">
+                    <pre><code>${data.code}</code></pre>
+                </div>
+                
+                <p><b>Test Case Results</b></p>
+                <div class="box">
+                    ${renderTestResults(data.test_results, data.result, data.stdout)}
+                </div>
+            `;
+            
+            detailsDiv.innerHTML = html;
+            document.getElementById(`submission-${submissionId}`).setAttribute('data-loaded', 'true');
+        })
+        .catch(error => {
+            debugLog('Error loading details', error);
+            detailsDiv.innerHTML = `<p class="error">Error loading details: ${error}</p>`;
+        });
+}
+
+// Render test results
+function renderTestResults(results, status, stdout) {
+    debugLog('Rendering test results', { results, status, stdout });
+    
+    // If there's stdout, display it
+    let output = '';
+    if (stdout) {
+        output += `<p><b>Program Output:</b></p><pre>${stdout}</pre>`;
+    }
+
+    if (!results || !Array.isArray(results) || results.length === 0) {
+        debugLog('No results or invalid results array', { results });
+        if (status === 'pending') {
+            return output + '<p class="status-message pending">Judging in progress...</p>';
+        } else if (status === 'fail') {
+            return output + '<p class="status-message fail">Test failed. Please check your code logic.</p>';
+        } else if (status === 'error') {
+            return output + '<p class="status-message error">Runtime error occurred.</p>';
+        }
+        return output + '<p class="status-message">No test results available.</p>';
+    }
+
+    output += '<div class="test-results">';
+    let passCount = 0;
+    results.forEach((result, index) => {
+        debugLog(`Test case ${index + 1}`, result);
+        const passed = result.pass || false;
+        if (passed) passCount++;
+        
+        output += `
+            <div class="test-case ${passed ? 'pass' : 'fail'}">
+                <h4>Test Case ${index + 1}</h4>
+                ${result.input ? `<p><b>Input:</b> <pre>${result.input}</pre></p>` : ''}
+                <p><b>Expected Output:</b> <pre>${result.expected || result.expected_output || ''}</pre></p>
+                <p><b>Actual Output:</b> <pre>${result.actual || result.actual_output || ''}</pre></p>
+                ${result.error ? `<p class="error-message"><b>Error:</b> <pre>${result.error}</pre></p>` : ''}
+                <p><b>Result:</b> <span class="result-status ${passed ? 'pass' : 'fail'}">
+                    ${passed ? '✅ PASS' : '❌ FAIL'}
+                </span></p>
+            </div>
+            ${index < results.length - 1 ? '<hr>' : ''}
+        `;
+    });
+    output += '</div>';
+
+    // Add test results summary
+    const totalTests = results.length;
+    output = `
+        <p class="test-summary ${passCount === totalTests ? 'all-pass' : 'some-fail'}">
+            <b>${passCount}/${totalTests}</b> test cases passed
+        </p>
+    ` + output;
+
+    return output;
+}
+
+// Update pending submissions
+function updatePendingSubmissions() {
+    debugLog('Updating pending submissions');
+    document.querySelectorAll('.pending-status').forEach(status => {
+        const submissionId = status.getAttribute('data-submission-id');
+        const details = document.getElementById(`submission-${submissionId}`);
+        
+        fetch(`/api/submission/${submissionId}`)
+            .then(response => response.json())
+            .then(data => {
+                debugLog('Pending submission update', data);
+                if (data.result !== 'pending') {
+                    const statusMap = {
+                        'ok': { text: 'PASS', color: 'green' },
+                        'fail': { text: 'FAIL', color: 'red' },
+                        'error': { text: 'ERROR', color: 'orange' }
+                    };
+                    const status = statusMap[data.result] || { text: data.result.toUpperCase(), color: 'blue' };
+                    status.style.color = status.color;
+                    status.textContent = `[${status.text}]`;
+                    status.classList.remove('pending-status');
+                    
+                    // If details are open, update the content
+                    if (details.open) {
+                        loadSubmissionDetails(submissionId);
+                    }
+                }
+            });
+    });
+}
+
+// Update pending submissions every 2 seconds
+const pendingElements = document.querySelectorAll('.pending-status');
+if (pendingElements.length > 0) {
+    debugLog('Setting up pending submissions update interval', { count: pendingElements.length });
+    setInterval(updatePendingSubmissions, 2000);
+}
+
+// Output a log to confirm script loaded
+debugLog('Script loaded', 'Homepage initialization complete');
+</script>
+{% endblock %} 

@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # Redis服务 - 作为Celery的消息代理
+  redis:
+    image: redis:7-alpine
+    container_name: openjudge-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # Flask Web应用
+  web:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: openjudge-web
+    ports:
+      - "8080:8080"
+    environment:
+      - FLASK_ENV=production
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:////app/instance/openjudge.db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    volumes:
+      - ./app:/app/app
+      - ./instance:/app/instance
+      - sqlite_data:/app/instance
+    command: gunicorn --bind 0.0.0.0:8080 --workers 2 --timeout 120 run:app
+
+  # Celery Worker
+  worker:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: openjudge-worker
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:////app/instance/openjudge.db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    volumes:
+      - ./app:/app/app
+      - ./instance:/app/instance
+      - sqlite_data:/app/instance
+    command: celery -A app.tasks worker --loglevel=info --concurrency=2
+
+volumes:
+  redis_data:
+  sqlite_data:
+
+networks:
+  default:
+    name: openjudge-network 

@@ -1,0 +1,17 @@
+main.tf
+image.tf
+deploy.sh
+
+# Learner Lab 的 AWS 凭据
+credentials
+
+# Git 仓库本体
+.git
+.gitignore
+
+# macOS 系统文件
+.DS_Store
+
+
+# 自动生成的 api 地址
+api.txt

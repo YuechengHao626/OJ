@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Code - OpenJudge{% endblock %}
+
+{% block content %}
+<section class="full-width">
+    <fieldset>
+        <h3 class="center">Submit Code</h3>
+        <hr>
+        
+        {% if problem %}
+        <form action="{{ url_for('web.submit_code') }}" method="post">
+            <input type="hidden" name="problem_id" value="{{ problem_id }}">
+            
+            <p><b>Problem {{ problem_id }}: {{ problem.title }}</b></p>
+            <p>{{ problem.description }}</p>
+            
+            <p><b>Test Cases</b></p>
+            <div class="box">
+                Test Case 1:<br>
+                Input: {{ problem.input or 'None' }}<br>
+                Expected Output: {{ problem.expected_output }}<br>
+            </div>
+            
+            <label for="code">
+                <p><b>Code</b></p>
+            </label>
+            <textarea
+                id="code"
+                name="code"
+                rows="15"
+                cols="50"
+                placeholder="Enter your code here..."
+                required
+                class="full-width"
+            ></textarea>
+
+            <div style="text-align: center; margin-top: 1em;">
+                <input type="submit" value="Submit" class="button">
+                <a href="{{ url_for('web.problems_list') }}" class="button" style="margin-left: 1em;">Back to Problems</a>
+            </div>
+        </form>
+        {% else %}
+        <p class="center">Problem not found. <a href="{{ url_for('web.problems_list') }}">Back to Problems</a></p>
+        {% endif %}
+    </fieldset>
+</section>
+{% endblock %} 

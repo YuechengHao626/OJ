@@ -1,0 +1,38 @@
+FROM ubuntu:24.04
+
+# 禁用交互提示
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装 Python + 基础工具 + Docker客户端
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip python3-venv curl wget steghide \
+    apt-transport-https ca-certificates gnupg lsb-release \
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update && apt-get install -y docker-ce-cli \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# 安装 Poetry（官方推荐方式）
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制整个项目到容器中（包括 pyproject.toml、app 代码、images、run.py 等）
+COPY . .
+
+# 安装 Python 项目依赖（但不安装项目自身）
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --no-root
+
+# 创建数据库目录（Flask 默认用 instance/）
+RUN mkdir -p /app/instance
+
+# 暴露 Flask 服务端口
+EXPOSE 6400
+EXPOSE 8080
+
+# 使用 gunicorn 启动 Flask 服务
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "run:app"]

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - OpenJudge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #777;
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .link-group {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .link-group a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link-group a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            color: #363;
+            border: 1px solid #cfc;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">
+            <h1>OpenJudge</h1>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <small>3-20 characters, only letters, numbers and underscore allowed</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <small>At least 6 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <button type="submit" class="btn" id="registerBtn">Register</button>
+            
+            <div class="loading" id="loading"></div>
+        </form>
+
+        <div class="link-group">
+            <p>Already have an account? <a href="/login">Login now</a></p>
+        </div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const loading = document.getElementById('loading');
+        const alertContainer = document.getElementById('alert-container');
+
+        function showAlert(message, type = 'error') {
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+
+        function clearAlert() {
+            alertContainer.innerHTML = '';
+        }
+
+        function validateUsername(username) {
+            if (username.length < 3 || username.length > 20) {
+                return 'Username length must be between 3-20 characters';
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                return 'Username can only contain letters, numbers, and underscores';
+            }
+            return null;
+        }
+
+        function validatePassword(password) {
+            if (password.length < 6) {
+                return 'Password must be at least 6 characters';
+            }
+            if (password.length > 100) {
+                return 'Password length cannot exceed 100 characters';
+            }
+            return null;
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // 前端验证
+            const usernameError = validateUsername(username);
+            if (usernameError) {
+                showAlert(usernameError);
+                return;
+            }
+
+            const passwordError = validatePassword(password);
+            if (passwordError) {
+                showAlert(passwordError);
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match');
+                return;
+            }
+
+            // 显示加载状态
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Registering...';
+            loading.style.display = 'block';
+            clearAlert();
+
+            try {
+                const response = await fetch('/api/v1/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Registration successful! Redirecting to login page...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                } else {
+                    showAlert(data.detail || 'Registration failed');
+                }
+            } catch (error) {
+                showAlert('Network error, please try again later');
+            } finally {
+                // 恢复按钮状态
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Register';
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

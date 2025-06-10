@@ -1,0 +1,20 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor User as "User"
+
+package "OpenJudge" {
+
+  component "Main Application" as monolith <<Flask>>
+
+  database "Application DB" as appDb <<PostgreSQL>>
+  queue "AWS SQS Message Broker" as sqs <<AWS SQS>>
+  component "Code Execution Worker" as worker <<Python>>
+}
+
+User --> monolith : Uses and views web pages
+monolith --> appDb : Reads and writes user and submission data
+monolith --> sqs : Pushes code execution task
+worker --> sqs : Consumes tasks from
+worker --> appDb : Updates execution results
+@enduml

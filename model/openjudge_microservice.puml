@@ -1,0 +1,28 @@
+@startuml
+skinparam componentStyle rectangle
+
+actor User as "User"
+
+package "OpenJudge" {
+
+  package "User Management" {
+    [User Service] <<Flask>>
+    database "User DB" as userDb <<PostgreSQL>>
+  }
+
+  package "Submission Handling" {
+    [Submission Service] <<Flask>>
+    database "Submission DB" as submissionDb <<PostgreSQL>>
+    queue "AWS SQS Message Broker" as sqs <<AWS SQS>>
+    component "Code Execution Worker" as worker <<Python>>
+  }
+}
+
+User --> [Submission Service] : Uses and views web pages from
+[Submission Service] --> [User Service] : Authenticates (JWT) and retrieves user details
+[Submission Service] --> submissionDb : Reads and writes
+[Submission Service] --> sqs : Pushes code execution task
+worker --> sqs : Consumes tasks from
+worker --> submissionDb : Updates execution results
+[User Service] --> userDb : Reads and writes
+@enduml

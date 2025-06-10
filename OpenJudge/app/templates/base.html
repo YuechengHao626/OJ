@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}OpenJudge{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+        <link rel="stylesheet" href="{{ url_for('web.static', filename='css/custom.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>OpenJudge</h1>
+            <p>Welcome, <b>{{ current_user.username if current_user else 'Guest' }}</b>!</p>
+            <nav>
+                <a href="{{ url_for('web.homepage') }}" class="{% if request.endpoint == 'web.homepage' %}active{% endif %}">Submissions</a>
+                <a href="{{ url_for('web.problems_list') }}" class="{% if request.endpoint == 'web.problems_list' %}active{% endif %}">Problems</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; 2025 OpenJudge</p>
+        </footer>
+
+        <script>
+            async function logout() {
+                try {
+                    const response = await fetch('/api/v1/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed');
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Logout failed');
+                }
+            }
+        </script>
+
+        {% block scripts %}{% endblock %}
+    </body>
+</html> 

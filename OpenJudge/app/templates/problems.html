@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Problems - OpenJudge{% endblock %}
+
+{% block content %}
+<section class="full-width">
+    <div class="box">
+        <h3 class="center">Available Problems</h3>
+        <hr>
+        {% for problem_id, problem in problems.items() %}
+        <div class="box">
+            <h4>Problem {{ problem_id }}: {{ problem.title }}</h4>
+            <p><b>Description:</b> {{ problem.description }}</p>
+            <p><b>Sample Input:</b> {{ problem.input }}</p>
+            <p><b>Expected Output:</b> {{ problem.expected_output }}</p>
+            <div style="text-align: center; margin-top: 1em;">
+                <a href="{{ url_for('web.submit_form', problem_id=problem_id) }}" class="button">Solve This Problem</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %} 
