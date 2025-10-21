@@ -1,80 +1,80 @@
-# 2025_P4_OpenJudge - Educational Online Judge Platform
+# 2025_P4_OpenJudge - 教育在线判题平台
 
 
-## Project Overview
+## 项目概述
 
-OpenJudge is an educational online judge platform designed to address a key limitation of existing competitive programming platforms. Unlike traditional online judges such as LeetCode or Codeforces that hide test cases to prevent students from exploiting test cases, our system is built specifically for educational purposes where **all test cases are fully visible** to students. Currently, this MVP version only supports solving problems using **Python**.
+OpenJudge是一个教育在线判题平台，旨在解决现有竞赛编程平台的关键限制。与LeetCode或Codeforces等传统在线判题平台隐藏测试用例以防止学生利用测试用例不同，我们的系统专门为教育目的而构建，**所有测试用例对学生完全可见**。目前，这个MVP版本仅支持使用**Python**解决问题。
 
-This transparency allows students to:
-- **Learn from their mistakes** by seeing exactly which test cases fail
-- **Debug more effectively** with complete visibility into expected vs. actual outputs  
-- **Improve problem-solving skills** through iterative refinement based on clear feedback
-- **Understand edge cases** that they might not have considered
+这种透明度使学生能够：
+- **从错误中学习**，通过准确看到哪些测试用例失败
+- **更有效地调试**，完全了解预期输出与实际输出的对比
+- **通过基于清晰反馈的迭代改进来提高问题解决技能**
+- **理解他们可能没有考虑到的边缘情况**
 
-The platform maintains the familiar Online Judge model while prioritizing learning and understanding over competitive assessment.
+该平台保持熟悉的在线判题模型，同时优先考虑学习和理解而非竞赛评估。
 
-## 🚀 Live Demo
+## 🚀 在线演示
 
-**Access the deployed platform**: [http://coughoverflow-alb-1348614147.us-east-1.elb.amazonaws.com/](http://coughoverflow-alb-1348614147.us-east-1.elb.amazonaws.com/)
+**访问部署的平台**: [http://coughoverflow-alb-1348614147.us-east-1.elb.amazonaws.com/](http://coughoverflow-alb-1348614147.us-east-1.elb.amazonaws.com/)
 
-**Default Login Credentials:**
-- **Username**: `CSSE6400`
-- **Password**: `qimojiayou`
+**默认登录凭据:**
+- **用户名**: `CSSE6400`
+- **密码**: `qimojiayou`
 
-Use these credentials to explore the platform's features, submit code solutions, and experience the educational-focused online judge environment.
+使用这些凭据探索平台功能、提交代码解决方案，并体验以教育为重点的在线判题环境。
 
-## 📁 Repository Structure
+## 📁 仓库结构
 
 ```
 2025_P4_OpenJudge/
-├── OpenJudge/                    # Main application directory
-│   ├── app/                      # Flask application core
-│   │   ├── models/              # Database models (User, Problem, Submission)
-│   │   ├── routes/              # API endpoints and route handlers
-│   │   ├── tasks.py             # Celery task definitions for async judging
-│   │   ├── utils/               # Helper functions and utilities
-│   │   └── __init__.py          # Flask app factory
-│   ├── test/                    # Comprehensive test suite
-│   │   ├── test_basic.py        # Basic functionality tests
-│   │   ├── test_judge_integration.py  # Judge system integration tests
-│   │   ├── test_validation.py   # Parameter validation and security tests
-│   │   ├── k6_performance_test.js     # k6 performance testing script
-│   │   ├── run_performance_test.sh    # Performance test runner
-│   │   ├── test.sh              # One-click test execution script
-│   │   └── auth_helper.py       # Authentication test utilities
-│   ├── instance/                # Instance-specific configuration
-│   ├── *.tf                     # Terraform infrastructure files
-│   │   ├── main.tf              # Core AWS infrastructure (ECS, ALB, VPC)
-│   │   ├── rds.tf               # PostgreSQL database configuration
-│   │   ├── sqs.tf               # SQS message queue setup
-│   │   ├── celery.tf            # Celery worker infrastructure
-│   │   └── autoscaling.tf       # Auto-scaling policies
-│   ├── deploy.sh                # One-click deployment script
-│   ├── dockerfile               # Container image definition
-│   ├── docker-compose.yml       # Local development environment
-│   ├── pyproject.toml           # Python dependencies and project metadata
-│   └── credentials              # AWS credentials (create manually)
-└── README.md                    # Project documentation (this file)
+├── OpenJudge/                    # 主应用程序目录
+│   ├── app/                      # Flask应用程序核心
+│   │   ├── models/              # 数据库模型 (User, Problem, Submission)
+│   │   ├── routes/              # API端点和路由处理器
+│   │   ├── tasks.py             # Celery异步判题任务定义
+│   │   ├── utils/               # 辅助函数和工具
+│   │   └── __init__.py          # Flask应用工厂
+│   ├── test/                    # 综合测试套件
+│   │   ├── test_basic.py        # 基本功能测试
+│   │   ├── test_judge_integration.py  # 判题系统集成测试
+│   │   ├── test_validation.py   # 参数验证和安全测试
+│   │   ├── k6_performance_test.js     # k6性能测试脚本
+│   │   ├── run_performance_test.sh    # 性能测试运行器
+│   │   ├── test.sh              # 一键测试执行脚本
+│   │   └── auth_helper.py       # 认证测试工具
+│   ├── instance/                # 实例特定配置
+│   ├── *.tf                     # Terraform基础设施文件
+│   │   ├── main.tf              # 核心AWS基础设施 (ECS, ALB, VPC)
+│   │   ├── rds.tf               # PostgreSQL数据库配置
+│   │   ├── sqs.tf               # SQS消息队列设置
+│   │   ├── celery.tf            # Celery工作器基础设施
+│   │   └── autoscaling.tf       # 自动扩缩容策略
+│   ├── deploy.sh                # 一键部署脚本
+│   ├── dockerfile               # 容器镜像定义
+│   ├── docker-compose.yml       # 本地开发环境
+│   ├── pyproject.toml           # Python依赖和项目元数据
+│   └── credentials              # AWS凭据 (手动创建)
+└── README.md                    # 项目文档 (本文件)
 ```
 
-**Key Components:**
-- **`app/`**: Core Flask application with MVC architecture
-- **`test/`**: Comprehensive endpoint-level tests including validation and security testing for cloud deployment
-- **`*.tf`**: Complete AWS infrastructure as code using Terraform
-- **`deploy.sh`**: Automated deployment pipeline
-- **`docker-compose.yml`**: Local development environment setup (don't use it in main branch,which is cloud version)
+**关键组件:**
+- **`app/`**: 采用MVC架构的核心Flask应用程序
+- **`test/`**: 包括云部署验证和安全测试的综合端点级测试
+- **`*.tf`**: 使用Terraform的完整AWS基础设施即代码
+- **`deploy.sh`**: 自动化部署管道
+- **`docker-compose.yml`**: 本地开发环境设置 (主分支中不使用，这是云版本)
 
-## Deployment
+## 部署
 
-### Architecture Stack
-- **Backend**: Flask (REST API)
-- **Authentication**: JSON Web Token (JWT)
-- **Task Queue**: Celery 
-- **Message Broker**: AWS SQS
-- **Database**: PostgreSQL (AWS RDS)
-- **Load Balancing**: AWS Application Load Balancer (ALB)
-- **Auto Scaling**: ECS Service Auto Scaling for API and Worker
-- **Infrastructure**: Terraform, Docker, AWS services
+### 架构栈
+- **后端**: Flask (REST API)
+- **认证**: JSON Web Token (JWT)
+- **任务队列**: Celery 
+- **消息代理**: AWS SQS
+- **数据库**: PostgreSQL (AWS RDS)
+- **负载均衡**: AWS应用负载均衡器 (ALB)
+- **自动扩缩容**: API和工作器的ECS服务自动扩缩容
+- **基础设施**: Terraform, Docker, AWS服务
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -89,22 +89,22 @@ Use these credentials to explore the platform's features, submit code solutions,
 │   (Database)    │                          
 └─────────────────┘                          
 ```
-**Sandbox Removal**: Unlike local version, we removed judge sandbox in cloud version. We originally planned to implement sandboxed containerized judging using ECS RunTask via boto3 to isolate user code execution. However, during implementation we discovered that launching a new container per submission introduced unacceptable latency in the cloud environment. As a result, we removed the sandbox component and now execute judging logic directly within the Celery worker process. The security and performance trade-offs of this decision are documented in detail in our final project report.
+**沙箱移除**: 与本地版本不同，我们在云版本中移除了判题沙箱。我们原本计划使用ECS RunTask通过boto3实现沙箱化容器判题来隔离用户代码执行。然而，在实施过程中我们发现，每次提交启动新容器在云环境中引入了不可接受的延迟。因此，我们移除了沙箱组件，现在直接在Celery工作器进程中执行判题逻辑。此决策的安全性和性能权衡在我们的最终项目报告中详细记录。
 
-### Branch Structure
-Due to configuration differences, I used the main branch to support the cloud-deployed version and endpoint testing, while the local branch is used for local development and internal testing.
-- **`main` branch**: Cloud-deployed production version using AWS infrastructure (currently live at the URL above) with end-point and performance tests.
-- **`local` branch**: Local development and internal testing environment
+### 分支结构
+由于配置差异，我使用主分支支持云部署版本和端点测试，而本地分支用于本地开发和内部测试。
+- **`main` 分支**: 使用AWS基础设施的云部署生产版本（目前在上面的URL上运行）包含端点和性能测试。
+- **`local` 分支**: 本地开发和内部测试环境
 
-### Cloud Deployment (main branch)
+### 云部署 (main分支)
 
-1. **Navigate to the project directory:**
+1. **导航到项目目录:**
    ```bash
    cd OpenJudge/
    ```
 
-2. **Configure AWS credentials:**
-   Create a file named `credentials` with your AWS credentials:
+2. **配置AWS凭据:**
+   创建名为`credentials`的文件，包含您的AWS凭据:
    ```ini
    [default]
    aws_access_key_id=YOUR_KEY
@@ -112,213 +112,200 @@ Due to configuration differences, I used the main branch to support the cloud-de
    aws_session_token=YOUR_SESSION_TOKEN
    ```
 
-3. **Deploy the infrastructure:**
+3. **部署基础设施:**
    ```bash
    ./deploy.sh
    ```
 
-The deployment script will:
-- Initialize and upgrade Terraform modules
-- Apply the complete AWS infrastructure configuration
-- Output the API endpoint URL upon successful completion
+部署脚本将:
+- 初始化和升级Terraform模块
+- 应用完整的AWS基础设施配置
+- 成功完成后输出API端点URL
 
-**Recommend you use Ubuntu to deploy it to AWS, just in case of some weird problem.** 
+**建议您使用Ubuntu部署到AWS，以防出现一些奇怪的问题。** 
 
-## Usage
+## 使用
 
-### Usage Model
+### 使用模式
 
-OpenJudge follows the traditional Online Judge paradigm similar to ACM/ICPC-style online judge model, which is different from leetcode mode
-- Students submit source code solutions for predefined programming problems
-- The system executes submissions against multiple test cases
-- Each test case receives a verdict (PASS/FAIL/ERROR) with detailed output comparison
-- **Submissions must read input from standard input and print output to standard output**
-- **Only support python code**
+OpenJudge遵循传统的在线判题范式，类似于ACM/ICPC风格的在线判题模型，这与leetcode模式不同
+- 学生为预定义的编程问题提交源代码解决方案
+- 系统针对多个测试用例执行提交
+- 每个测试用例接收判决结果(PASS/FAIL/ERROR)以及详细的输出比较
+- **提交必须从标准输入读取输入并打印输出到标准输出**
+- **仅支持python代码**
 
 
-### Example Problem
+### 示例问题
 
-**Problem 1: Odd or Even**
+**问题1: 奇数或偶数**
 
-**Description**: Given an integer, print 'even' if it is even, or 'odd' if it is odd.
+**描述**: 给定一个整数，如果是偶数则打印'even'，如果是奇数则打印'odd'。
 
-**Sample Input:**
+**示例输入:**
 ```
 3
 ```
 
-**Expected Output:**
+**期望输出:**
 ```
 odd
 ```
 
-**Correct Submission (Python):**
+**正确提交 (Python):**
 ```python
 n = int(input())
 print('even' if n % 2 == 0 else 'odd')
 ```
-**Problem 2: Armstrong Number**
+**问题2: 阿姆斯特朗数**
 
-**Description**: Check whether a 3-digit number is an Armstrong number. Print 'yes' or 'no'.
+**描述**: 检查一个3位数是否为阿姆斯特朗数。打印'yes'或'no'。
 
-**Sample Input:**
+**示例输入:**
 ```
 153
 ```
 
-**Expected Output:**
+**期望输出:**
 ```
 yes
 ```
 
-**Correct Submission (Python):**
+**正确提交 (Python):**
 ```python
 def is_armstrong_number(n):
-    # Check if the number is a 3-digit number
+    # 检查数字是否为3位数
     if not (100 <= n <= 999):
         return "no"
 
-    # Convert the number to a string to easily access its digits
+    # 将数字转换为字符串以便轻松访问其数字
     s_n = str(n)
 
-    # Calculate the sum of the cubes of its digits
+    # 计算其数字的立方和
     sum_of_cubes = int(s_n[0]) ** 3 + int(s_n[1]) ** 3 + int(
         s_n[2]) ** 3
 
-    # Check if it's an Armstrong number
+    # 检查是否为阿姆斯特朗数
     if sum_of_cubes == n:
         return "yes"
     else:
         return "no"
 
 
-# Read the input
+# 读取输入
 n = int(input())
 
-# Call the function and print the result
+# 调用函数并打印结果
 print(is_armstrong_number(n))
 ```
 
 ![Successful Test Result](/model/frontend_result.jpg)
 
 
-## Testing Strategy
+## 测试策略
 
-### Cloud Testing (main branch)
-Endpoint-level integration tests, parameter validation tests, and performance tests(k6) are located in the `OpenJudge/test/` directory. These tests:
-- API authentication and authorization
-- Problem submission workflows  
-- Judge execution and verdict reporting
-- Database persistence and retrieval
-- User isolation and access control
-- Parameter validation and security testing
-- Performance and load testing
+### 云测试 (main分支)
+端点级集成测试、参数验证测试和性能测试(k6)位于`OpenJudge/test/`目录中。这些测试包括:
+- API认证和授权
+- 问题提交工作流  
+- 判题执行和判决报告
+- 数据库持久化和检索
+- 用户隔离和访问控制
+- 参数验证和安全测试
+- 性能和负载测试
 
-**Test Files:**
-- **`test_basic.py`**: Core functionality tests including health checks, authentication, and basic judge operations
-- **`test_judge_integration.py`**: Comprehensive judge system integration tests with various code scenarios
-- **`test_validation.py`**: Parameter validation and security tests including:
-  - Authentication field validation (registration/login)
-  - Missing required field detection
-  - Invalid data type handling
-  - Code length limit enforcement (50KB)
-  - Dangerous code pattern detection (import os, eval, exec, etc.)
-  - Malformed JSON handling
-  - Unauthorized access prevention
-- **`k6_performance_test.js`**: k6 performance testing script for load testing
-- **`run_performance_test.sh`**: Performance test runner script
-- **`test.sh`**: One-click test execution script that runs all three test suites (basic, integration, validation)
-- **`auth_helper.py`**: Authentication utilities and helper functions for testing
+**测试文件:**
+- **`test_basic.py`**: 核心功能测试，包括健康检查、认证和基本判题操作
+- **`test_judge_integration.py`**: 各种代码场景的综合判题系统集成测试
+- **`test_validation.py`**: 参数验证和安全测试，包括:
+  - 认证字段验证 (注册/登录)
+  - 缺失必需字段检测
+  - 无效数据类型处理
+  - 代码长度限制执行 (50KB)
+  - 危险代码模式检测 (import os, eval, exec等)
+  - 格式错误的JSON处理
+  - 未授权访问防护
+- **`k6_performance_test.js`**: 用于负载测试的k6性能测试脚本
+- **`run_performance_test.sh`**: 性能测试运行器脚本
+- **`test.sh`**: 运行所有三个测试套件(基本、集成、验证)的一键测试执行脚本
+- **`auth_helper.py`**: 认证工具和测试辅助函数
 
-**Three-Phase Testing Strategy:**
-1. **Phase 1: Basic Functionality Tests** - Core system health and authentication
-2. **Phase 2: System Integration Tests** - End-to-end judge workflow validation  
-3. **Phase 3: Parameter Validation Tests** - Security and input validation verification
+**三阶段测试策略:**
+1. **阶段1: 基本功能测试** - 核心系统健康和认证
+2. **阶段2: 系统集成测试** - 端到端判题工作流验证  
+3. **阶段3: 参数验证测试** - 安全和输入验证验证
 
-More information please refer to README.md in test folder. If want to test more, please switch to local branch and do internal tests.
+更多信息请参考测试文件夹中的README.md。如果要进行更多测试，请切换到本地分支进行内部测试。
 
-#### Performance Testing with k6
-We use k6 for comprehensive performance testing that simulates realistic academic workloads and validates system scalability under peak usage conditions.
+#### 使用k6进行性能测试
+我们使用k6进行综合性能测试，模拟真实的学术工作负载并验证系统在峰值使用条件下的可扩展性。
 
-**Running Performance Tests:**
+**运行性能测试:**
 ```bash
 cd OpenJudge/test
 
-# Install k6 (if not already installed)
+# 安装k6 (如果尚未安装)
 # macOS: brew install k6
 # Ubuntu: sudo apt-get install k6
 # Windows: choco install k6
 
-# Run performance test with automatic result saving
+# 运行性能测试并自动保存结果
 ./run_performance_test.sh
 ```
 
-**Performance Test Features:**
-- **Academic Scenario Simulation**: Models real classroom usage patterns with concurrent student submissions
-- **Load Testing**: Tests system behavior under peak academic loads (assignment deadline scenarios)
-- **Scalability Validation**: Confirms auto-scaling effectiveness and system stability
-- **Comprehensive Metrics**: Tracks response times, throughput, success rates, and system performance
 
-**Recent Performance Results:**
-- **Peak Load**: 25 concurrent users sustained for 90 seconds
-- **Submission Success Rate**: 100% (250 submissions processed)
-- **Average Response Time**: 1.67 seconds
-- **95th Percentile**: 3.22 seconds
-- **Throughput**: 6.33 requests/second
-
-
-**Running Endpoint Functional Tests:**
+**运行端点功能测试:**
 ```bash
 cd OpenJudge/test
 ./test.sh
 ```
-If you choose to deploy the service yourself, replace the request URL with your own and install the requests library via pip.
+如果您选择自己部署服务，请将请求URL替换为您自己的URL，并通过pip安装requests库。
 
-The test script will automatically run both basic and integration test suites, providing comprehensive validation of the cloud deployment.
+测试脚本将自动运行基本和集成测试套件，提供云部署的综合验证。
 
-### Local Testing (local branch)
-Due to differences in configuration between the local and cloud environments, I have separated the codebase into two branches: local and main. The local branch supports internal function testing during local development(Internal tests are far more comprehensive than endpoint tests!). For local development, internal function and unit tests can be executed using:
+### 本地测试 (local分支)
+由于本地和云环境之间的配置差异，我将代码库分为两个分支：local和main。local分支支持本地开发期间的内部功能测试(内部测试比端点测试全面得多！)。对于本地开发，可以使用以下命令执行内部功能和单元测试：
 ```bash
 ./build_and_test.sh
 ```
-This command will automatically build the Docker image and run all internal unit and integration tests within the local development environment.
+此命令将自动构建Docker镜像并在本地开发环境中运行所有内部单元和集成测试。
 
-All test scripts with description are located in OpenJudge/localtest 
+所有带描述的测试脚本都位于OpenJudge/localtest中
 ```bash
    cd OpenJudge/localtest 
 ```
 
-This command runs the complete test suite including unit tests for core functionality and integration tests for the local development environment. It internally invokes the test scripts located in the OpenJudge/test/ directory.
+此命令运行完整的测试套件，包括核心功能的单元测试和本地开发环境的集成测试。它内部调用位于OpenJudge/test/目录中的测试脚本。
 
 
 
 ---
 
 
-## 🔒 Security Features
+## 🔒 安全功能
 
-Our OpenJudge platform implements several security measures to protect user data and prevent common web vulnerabilities:
+我们的OpenJudge平台实现了多项安全措施来保护用户数据并防止常见的Web漏洞：
 
-### Authentication & Session Management
-- **HTTP-only Cookies**: JWT tokens are stored in HTTP-only cookies to prevent XSS attacks from accessing authentication tokens
-- **Secure Cookie Configuration**: Cookies include `SameSite=Lax` protection against CSRF attacks
-- **Password Security**: User passwords are hashed using bcrypt with individual salt values
-- **JWT Token Expiration**: Authentication tokens automatically expire after 24 hours
+### 认证和会话管理
+- **HTTP-only Cookies**: JWT令牌存储在HTTP-only cookies中，以防止XSS攻击访问认证令牌
+- **安全Cookie配置**: Cookies包含`SameSite=Lax`保护，防止CSRF攻击
+- **密码安全**: 用户密码使用bcrypt和独立盐值进行哈希处理
+- **JWT令牌过期**: 认证令牌在24小时后自动过期
 
-### Code Execution Security
-- **Input Sanitization**: All user inputs are validated and sanitized before processing
-- **Dangerous Pattern Detection**: Code submissions are scanned for potentially unsafe patterns including:
-  - File system operations (`import os`, `open()`, `file()`)
-  - Network operations (`import socket`, `import requests`)
-  - System operations (`import subprocess`, `eval()`, `exec()`)
-  - Destructive operations (`rmdir`, `remove`, `delete`)
+### 代码执行安全
+- **输入清理**: 所有用户输入在处理前都经过验证和清理
+- **危险模式检测**: 代码提交会扫描潜在的不安全模式，包括:
+  - 文件系统操作 (`import os`, `open()`, `file()`)
+  - 网络操作 (`import socket`, `import requests`)
+  - 系统操作 (`import subprocess`, `eval()`, `exec()`)
+  - 破坏性操作 (`rmdir`, `remove`, `delete`)
 
-### API Security
-- **Request Validation**: All API endpoints validate JSON payloads and parameter types
-- **Authentication Required**: Protected endpoints require valid JWT tokens via HTTP-only cookies
-- **Error Handling**: Secure error messages that don't expose sensitive system information
+### API安全
+- **请求验证**: 所有API端点都验证JSON负载和参数类型
+- **需要认证**: 受保护的端点需要通过HTTP-only cookies提供有效的JWT令牌
+- **错误处理**: 不暴露敏感系统信息的安全错误消息
 
-**Note**: While we removed containerized sandboxing for performance reasons, the direct execution approach includes comprehensive input validation and dangerous code pattern detection to maintain security.
+**注意**: 虽然我们出于性能原因移除了容器化沙箱，但直接执行方法包括全面的输入验证和危险代码模式检测以维护安全性。
 
 
 
