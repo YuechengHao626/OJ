@@ -44,7 +44,7 @@ OpenJudge是一个专为教育设计的在线判题平台，致力于解决现�
 │   │   ├── run_performance_test.sh    # 性能测试运行器
 │   │   ├── test.sh              # 一键测试脚本
 │   │   └── auth_helper.py       # 认证测试工具
-│   ├── instance/                # 实例配置
+│   │
 │   ├── *.tf                     # Terraform基础设施文件
 │   │   ├── main.tf              # AWS核心基础设施 (ECS, ALB, VPC)
 │   │   ├── rds.tf               # PostgreSQL数据库配置
@@ -53,7 +53,7 @@ OpenJudge是一个专为教育设计的在线判题平台，致力于解决现�
 │   │   └── autoscaling.tf       # 自动扩缩容配置
 │   ├── deploy.sh                # 一键部署脚本
 │   ├── dockerfile               # 容器镜像配置
-│   ├── docker-compose.yml       # 本地开发环境
+│   ├── docker-compose.yml       # 本地开发环境（本地测试中使用redis作为消息队列）
 │   ├── pyproject.toml           # Python依赖配置
 │   └── credentials              # AWS认证信息 (需手动创建)
 └── README.md                    # 项目说明文档
